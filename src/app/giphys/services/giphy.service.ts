@@ -41,4 +41,19 @@ export class GiphyService {
       )}`
     );
   }
+
+  searchGifs(
+    query: String,
+    pageNumber: number = PAGE_NUMBER,
+    limit: number = LIMIT
+  ): Observable<any> {
+    return this.http.get(
+      `https://api.giphy.com/v1/gifs/search?api_key=${
+        this.apiKey
+      }&q=${query}&limit=${limit}&offset=${this.sharedService.calculateOffset(
+        limit,
+        pageNumber
+      )}&rating=G&lang=en`
+    );
+  }
 }

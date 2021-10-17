@@ -24,7 +24,7 @@ export class ListComponent implements OnInit {
   gifPage: number = 0;
   gifsLoading: boolean = false;
 
-  // Search
+  // Search Tags
   removable = true;
   separatorKeysCodes: number[] = [SPACE];
   tagCtrl = new FormControl();
@@ -36,7 +36,11 @@ export class ListComponent implements OnInit {
   @ViewChild('tagInput', { static: false })
   tagInput!: ElementRef<HTMLInputElement>;
   private tagPage: number = 0;
-  public tagsLoading: boolean = false;
+  tagsLoading: boolean = false;
+
+  // Search Gifs
+  filteredGifs: Image[] = [];
+  searchGifPage: number = 0;
 
   constructor(
     private giphyService: GiphyService,
@@ -62,6 +66,7 @@ export class ListComponent implements OnInit {
             // paginate
             this.gifs.push(...this.sharedService.parseGifs(response['data']));
           }
+          this.filteredGifs = this.gifs;
           this.gifsLoading = false;
         },
         (error) => {
@@ -72,8 +77,13 @@ export class ListComponent implements OnInit {
 
   onScroll() {
     if (!this.gifsLoading) {
-      this.gifPage++;
-      this.loadData(this.gifPage);
+      if (this.tags.length > 0) {
+        this.searchGifPage++;
+        this.searchGifs(this.tags.join(' '), this.searchGifPage);
+      } else {
+        this.gifPage++;
+        this.loadData(this.gifPage);
+      }
     }
   }
 
@@ -88,6 +98,7 @@ export class ListComponent implements OnInit {
     // event.chipInput!.clear();
     inputName.value = '';
     this.resetVariables();
+    this.searchGifs(this.tags.join(' '), this.searchGifPage);
   }
 
   remove(tag: string): void {
@@ -95,6 +106,13 @@ export class ListComponent implements OnInit {
 
     if (index >= 0) {
       this.tags.splice(index, 1);
+    }
+    if (this.tags.length > 0) {
+      this.searchGifPage = 0;
+      this.searchGifs(this.tags.join(' '), this.searchGifPage);
+    } else {
+      this.searchGifPage = 0;
+      this.filteredGifs = this.gifs;
     }
   }
 
@@ -106,12 +124,14 @@ export class ListComponent implements OnInit {
     // reset vars
     this.tagInput.nativeElement.value = '';
     this.resetVariables();
+    this.searchGifs(this.tags.join(' '), this.searchGifPage);
   }
 
   resetVariables() {
     this.tagCtrl.setValue(null);
     this.suggestionsTags.next([]);
     this.tagPage = 0;
+    this.searchGifPage = 0;
   }
 
   private inputHandler() {
@@ -164,6 +184,30 @@ export class ListComponent implements OnInit {
         this.tagPage
       );
     }
+  }
+
+  searchGifs(query: String, page: number) {
+    this.gifsLoading = true;
+    this.giphyService
+      .searchGifs(query, page)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          if (page == 0) {
+            // load first page
+            this.filteredGifs = this.sharedService.parseGifs(response['data']);
+          } else {
+            // paginate
+            this.filteredGifs.push(
+              ...this.sharedService.parseGifs(response['data'])
+            );
+          }
+          this.gifsLoading = false;
+        },
+        (error) => {
+          console.error('something wont wrong');
+        }
+      );
   }
 
   // destroy any subscribe to avoid memory leak
