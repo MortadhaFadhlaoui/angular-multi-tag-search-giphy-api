@@ -26,4 +26,19 @@ export class GiphyService {
       )}&rating=G`
     );
   }
+
+  searchSuggestionsTags(
+    query: String,
+    pageNumber: number = PAGE_NUMBER,
+    limit: number = LIMIT
+  ): Observable<any> {
+    return this.http.get(
+      `https://api.giphy.com/v1/gifs/search/tags?api_key=${
+        this.apiKey
+      }&q=${query}&limit=${limit}&offset=${this.sharedService.calculateOffset(
+        limit,
+        pageNumber
+      )}`
+    );
+  }
 }
