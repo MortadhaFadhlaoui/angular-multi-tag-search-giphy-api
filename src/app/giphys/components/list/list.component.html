@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="row" id="grid">
+    <ng-container *ngIf="gifs.length > 0">
+      <div *ngFor="let trendingGif of gifs; index as i" class="col-md-4">
+        <img src="{{ trendingGif.url }}" class="img-thumbnail img-responsive" />
+      </div>
+    </ng-container>
+    <app-empty-list *ngIf="gifs.length == 0 && !gifsLoading"></app-empty-list>
+    <div
+      *ngIf="(gifsLoading && gifPage == 0) || (gifs.length > 0 && gifsLoading)"
+      class="spinner-border"
+      role="status"
+    ></div>
+  </div>
+</div>
+<div
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"
+></div>
