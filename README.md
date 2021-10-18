@@ -10,13 +10,18 @@ per page).
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server.
+
+Run `ng test` for unit test.
+
+Run `npm run e2e` for e2e tests.
 
 # comments
 
 The **ngx-infinite-scroll** library used for pagination.  
 The **@angular/material** library used for set up multi-tag search field.  
 The **bootstrap** library used for UI.
+The **cypress** library used for e2e tests.
 
 # remarks
 
