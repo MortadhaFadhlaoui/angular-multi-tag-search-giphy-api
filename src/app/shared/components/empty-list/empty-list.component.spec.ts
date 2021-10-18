@@ -8,9 +8,8 @@ describe('EmptyListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EmptyListComponent ]
-    })
-    .compileComponents();
+      declarations: [EmptyListComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('EmptyListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('EmptyList component should create', () => {
     expect(component).toBeTruthy();
   });
 });

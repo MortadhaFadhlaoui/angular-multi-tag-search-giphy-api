@@ -28,5 +28,6 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
   ],
   exports: [EmptyListComponent, NavBarComponent, SearchComponent],
+  providers: [OptionsScrollDirective],
 })
 export class SharedModule {}

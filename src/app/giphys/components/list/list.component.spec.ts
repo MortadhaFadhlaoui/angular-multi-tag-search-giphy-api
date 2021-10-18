@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ListComponent } from './list.component';
+import { GiphyService } from '../../services/giphy.service';
 
 describe('ListComponent', () => {
   let component: ListComponent;
@@ -8,9 +9,10 @@ describe('ListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ListComponent ]
-    })
-    .compileComponents();
+      declarations: [ListComponent],
+      imports: [HttpClientTestingModule],
+      providers: [GiphyService],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +21,7 @@ describe('ListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('List component should create', () => {
     expect(component).toBeTruthy();
   });
 });

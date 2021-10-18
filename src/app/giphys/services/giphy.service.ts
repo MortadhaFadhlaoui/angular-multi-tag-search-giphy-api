@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LIMIT, PAGE_NUMBER } from 'src/app/shared/constant';
+import { LANG, LIMIT, PAGE_NUMBER, RATING } from 'src/app/shared/constant';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { environment } from 'src/environments/environment';
 
@@ -18,12 +18,12 @@ export class GiphyService {
     limit: number = LIMIT
   ): Observable<any> {
     return this.http.get(
-      `https://api.giphy.com/v1/gifs/trending?api_key=${
+      `${environment.baseUrl}/trending?api_key=${
         this.apiKey
       }&limit=${limit}&offset=${this.sharedService.calculateOffset(
         limit,
         pageNumber
-      )}&rating=G`
+      )}&rating=${RATING}`
     );
   }
 
@@ -33,7 +33,7 @@ export class GiphyService {
     limit: number = LIMIT
   ): Observable<any> {
     return this.http.get(
-      `https://api.giphy.com/v1/gifs/search/tags?api_key=${
+      `${environment.baseUrl}/search/tags?api_key=${
         this.apiKey
       }&q=${query}&limit=${limit}&offset=${this.sharedService.calculateOffset(
         limit,
@@ -48,12 +48,12 @@ export class GiphyService {
     limit: number = LIMIT
   ): Observable<any> {
     return this.http.get(
-      `https://api.giphy.com/v1/gifs/search?api_key=${
+      `${environment.baseUrl}/search?api_key=${
         this.apiKey
       }&q=${query}&limit=${limit}&offset=${this.sharedService.calculateOffset(
         limit,
         pageNumber
-      )}&rating=G&lang=en`
+      )}&rating=${RATING}&lang=${LANG}`
     );
   }
 }

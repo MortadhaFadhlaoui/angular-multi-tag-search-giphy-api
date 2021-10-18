@@ -1,5 +1,5 @@
 export interface GiphyData {
-  id: number;
+  id: string;
   title: string;
   images: {
     original: {
