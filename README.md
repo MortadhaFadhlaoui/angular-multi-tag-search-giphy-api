@@ -1,27 +1,24 @@
 # AngularMultiTagSearchGiphyApi
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.10.
+This is an Angular version 12.2.10 project listing a result of images from the [Giphy API](https://developers.giphy.com/).
+
+The main page provides a search field with multi-tag search words, you can just enter your word and the
+field will suggest for you existing tags from the API. Also, you can search with your preferred tag when you enter the word and clicking **SPACE**.
+
+Results displayed in 3 x 3 images and both list and search list with pagination (9 pictures
+per page).
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+# comments
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The **ngx-infinite-scroll** library used for pagination.  
+The **@angular/material** library used for set up multi-tag search field.  
+The **bootstrap** library used for UI.
 
-## Build
+# remarks
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Project build with Angular 12 && TypeScript.  
+unit tests build with Jasmine test framework.
