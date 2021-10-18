@@ -1,14 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Image } from 'src/app/shared/models/image';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { GiphyService } from '../../services/giphy.service';
 import { takeUntil } from 'rxjs/operators';
 import { SPACE } from '@angular/cdk/keycodes';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
 import { Tag } from 'src/app/shared/models/tag';
+import { SearchInput } from 'src/app/shared/models/search-input';
 
 @Component({
   selector: 'app-list',
@@ -17,7 +15,6 @@ import { Tag } from 'src/app/shared/models/tag';
 })
 export class ListComponent implements OnInit {
   private _destroyed$ = new Subject();
-  private timeout: any;
 
   // List
   gifs: Image[] = [];
@@ -25,18 +22,13 @@ export class ListComponent implements OnInit {
   gifsLoading: boolean = false;
 
   // Search Tags
-  removable = true;
   separatorKeysCodes: number[] = [SPACE];
-  tagCtrl = new FormControl();
   suggestionsTags: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
     []
   );
   tags: string[] = [];
-
-  @ViewChild('tagInput', { static: false })
-  tagInput!: ElementRef<HTMLInputElement>;
-  private tagPage: number = 0;
   tagsLoading: boolean = false;
+  placeholder: string = 'Search Gifs';
 
   // Search Gifs
   filteredGifs: Image[] = [];
@@ -49,17 +41,17 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
     this.loadData(this.gifPage);
-    this.inputHandler();
   }
 
   loadData(page: number) {
+    this.gifPage = page;
     this.gifsLoading = true;
     this.giphyService
       .getGifsByPage(page)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (response) => {
-          if (page == 0) {
+          if (page === 0) {
             // load first page
             this.gifs = this.sharedService.parseGifs(response['data']);
           } else {
@@ -78,85 +70,43 @@ export class ListComponent implements OnInit {
   onScroll() {
     if (!this.gifsLoading) {
       if (this.tags.length > 0) {
-        this.searchGifPage++;
-        this.searchGifs(this.tags.join(' '), this.searchGifPage);
+        this.searchGifs(this.tags, ++this.searchGifPage);
       } else {
-        this.gifPage++;
-        this.loadData(this.gifPage);
+        this.loadData(++this.gifPage);
       }
     }
   }
 
-  add(event: MatChipInputEvent, inputName: HTMLInputElement): void {
-    const value = (event.value || '').trim();
-
-    // Add our tag
-    if (value && !this.tags.includes(value)) {
-      this.tags.push(value);
-    }
-    // Clear the input value
-    // event.chipInput!.clear();
-    inputName.value = '';
-    this.resetVariables();
-    this.searchGifs(this.tags.join(' '), this.searchGifPage);
+  onAdd(tags: string[]): void {
+    this.searchGifs(tags, 0);
   }
 
-  remove(tag: string): void {
-    const index = this.tags.indexOf(tag);
-
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
-    if (this.tags.length > 0) {
-      this.searchGifPage = 0;
-      this.searchGifs(this.tags.join(' '), this.searchGifPage);
+  onRemove(tags: string[]): void {
+    if (tags.length > 0) {
+      this.searchGifs(tags, 0);
     } else {
+      this.tags = [];
       this.searchGifPage = 0;
       this.filteredGifs = this.gifs;
     }
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    // add tag when not selected
-    if (!this.tags.includes(event.option.viewValue)) {
-      this.tags.push(event.option.viewValue);
-    }
-    // reset vars
-    this.tagInput.nativeElement.value = '';
-    this.resetVariables();
-    this.searchGifs(this.tags.join(' '), this.searchGifPage);
+  onSelected(tags: string[]): void {
+    this.searchGifs(tags, 0);
   }
 
-  resetVariables() {
-    this.tagCtrl.setValue(null);
-    this.suggestionsTags.next([]);
-    this.tagPage = 0;
-    this.searchGifPage = 0;
+  onTextChange(input: string) {
+    this.searchSuggestionsTags(input, 0);
   }
 
-  private inputHandler() {
-    // handle input change
-    this.tagCtrl.valueChanges.subscribe((input: string | null) => {
-      // check if the input not null && not exist in the suggestions tags
-      if (input && !this.suggestionsTags.getValue().includes(input)) {
-        clearTimeout(this.timeout);
-        var $this = this;
-        // wait the user finish typing
-        this.timeout = setTimeout(() => {
-          $this.searchSuggestionsTags(input, this.tagPage);
-        }, 500);
-      }
-    });
-  }
-
-  searchSuggestionsTags(input: String, page: number) {
+  searchSuggestionsTags(input: string, page: number) {
     this.tagsLoading = true;
     this.giphyService
       .searchSuggestionsTags(input, page)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (response) => {
-          if (page == 0) {
+          if (page === 0) {
             // load first page
             this.suggestionsTags.next(
               response['data'].map((tag: Tag) => tag.name)
@@ -176,24 +126,20 @@ export class ListComponent implements OnInit {
       );
   }
 
-  onScrollTags() {
-    if (!this.tagsLoading) {
-      this.tagPage++;
-      this.searchSuggestionsTags(
-        this.tagInput.nativeElement.value,
-        this.tagPage
-      );
-    }
+  onScrollTags(searchInput: SearchInput) {
+    this.searchSuggestionsTags(searchInput.input, searchInput.page);
   }
 
-  searchGifs(query: String, page: number) {
+  searchGifs(tags: string[], page: number) {
+    this.tags = tags;
+    this.searchGifPage = page;
     this.gifsLoading = true;
     this.giphyService
-      .searchGifs(query, page)
+      .searchGifs(tags.join(' '), page)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (response) => {
-          if (page == 0) {
+          if (page === 0) {
             // load first page
             this.filteredGifs = this.sharedService.parseGifs(response['data']);
           } else {

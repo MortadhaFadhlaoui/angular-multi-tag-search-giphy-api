@@ -28,7 +28,7 @@ export class GiphyService {
   }
 
   searchSuggestionsTags(
-    query: String,
+    query: string,
     pageNumber: number = PAGE_NUMBER,
     limit: number = LIMIT
   ): Observable<any> {
@@ -43,7 +43,7 @@ export class GiphyService {
   }
 
   searchGifs(
-    query: String,
+    query: string,
     pageNumber: number = PAGE_NUMBER,
     limit: number = LIMIT
   ): Observable<any> {

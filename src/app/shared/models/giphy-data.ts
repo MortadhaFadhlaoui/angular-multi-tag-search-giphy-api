@@ -1,9 +1,9 @@
 export interface GiphyData {
   id: number;
-  title: String;
+  title: string;
   images: {
     original: {
-      url: String;
+      url: string;
     };
   };
 }

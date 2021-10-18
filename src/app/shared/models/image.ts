@@ -1,7 +1,7 @@
 export class Image {
   id: number;
-  title: String;
-  url: String;
+  title: string;
+  url: string;
   constructor();
   constructor(image?: any) {
     this.id = (image && image.id) || null;

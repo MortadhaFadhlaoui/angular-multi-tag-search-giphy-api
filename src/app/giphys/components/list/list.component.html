@@ -1,35 +1,16 @@
 <div class="container">
   <!-- search section -->
-  <mat-form-field class="example-chip-list" appearance="fill">
-    <mat-chip-list #chipList aria-label="Tag selection">
-      <mat-chip
-        *ngFor="let tag of tags"
-        [removable]="removable"
-        (removed)="remove(tag)"
-      >
-        {{ tag }}
-        <mat-icon matChipRemove>cancel</mat-icon>
-      </mat-chip>
-      <input
-        placeholder="Search Gifs"
-        #tagInput
-        [formControl]="tagCtrl"
-        [matAutocomplete]="auto"
-        [matChipInputFor]="chipList"
-        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event, tagInput)"
-      />
-    </mat-chip-list>
-    <mat-autocomplete
-      #auto="matAutocomplete"
-      (optionSelected)="selected($event)"
-      (optionsScroll)="onScrollTags()"
-    >
-      <mat-option *ngFor="let tag of suggestionsTags | async" [value]="tag">
-        {{ tag }}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <app-search
+    [suggestionsTags]="suggestionsTags"
+    [separatorKeysCodes]="separatorKeysCodes"
+    [placeholder]="placeholder"
+    [loading]="tagsLoading"
+    (onAdd)="onAdd($event)"
+    (onRemove)="onRemove($event)"
+    (onSelected)="onSelected($event)"
+    (onTextChange)="onTextChange($event)"
+    (onScrollTags)="onScrollTags($event)"
+  ></app-search>
   <!-- list section -->
   <div class="row" id="grid">
     <ng-container *ngIf="filteredGifs.length > 0">
