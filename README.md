@@ -1,6 +1,6 @@
 # AngularMultiTagSearchGiphyApi
 
-This is an Angular version 12.2.10 project listing a result of images from the [Giphy API](https://developers.giphy.com/).
+This is an Angular version 12.2.10 project listing result of images from the [Giphy API](https://developers.giphy.com/).
 
 The main page provides a search field with multi-tag search words, you can just enter your word and the
 field will suggest for you existing tags from the API. Also, you can search with your preferred tag when you enter the word and clicking **SPACE**.
@@ -21,4 +21,5 @@ The **bootstrap** library used for UI.
 # remarks
 
 Project build with Angular 12 && TypeScript.  
-unit tests build with Jasmine test framework.
+Unit tests build with Jasmine test framework.  
+We used Cypress for e2e tests since Protractor is deprecated in the latest versions.
